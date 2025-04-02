@@ -1,0 +1,135 @@
+<main class="app-container">
+  <div class="content-wrapper">
+    <header class="app-header">
+      <h1>AI-Powered Team Jobs Manager</h1>
+      <p class="subtitle">Upload your documents and let AI enhance your team's tasks with web knowledge</p>
+    </header>
+    
+    <!-- File Upload Section -->
+    <section class="upload-container">
+      <div class="upload-area" [class.processing]="isProcessingFile" [class.drag-over]="isDragOver">
+        <input 
+          type="file" 
+          id="fileUpload" 
+          (change)="onFileSelected($event)" 
+          accept=".csv,.db,.sqlite,.sqlite3,.pdf,.html"
+          [disabled]="isProcessingFile"
+          class="file-input"
+          #fileInput>
+        
+        <div class="upload-content">
+          <div class="upload-icon">
+            @if (isProcessingFile) {
+              <div class="loader"></div>
+            } @else {
+              <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="17 8 12 3 7 8"/>
+                <line x1="12" y1="3" x2="12" y2="15"/>
+              </svg>
+            }
+          </div>
+          
+          <div class="upload-text">
+            @if (isProcessingFile) {
+              <h3>Processing your file...</h3>
+              <p>This might take a moment</p>
+            } @else {
+              <h3>Drop your file here</h3>
+              <p>or <span class="browse-text" (click)="fileInput.click()">browse</span> to choose a file</p>
+              <span class="file-types">Supported formats: CSV, SQLite DB, PDF, HTML</span>
+            }
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- AI Processing Status -->
+    @if (aiStatus.isProcessing) {
+      <section class="ai-status">
+        <div class="status-container">
+          <h3>AI Processing</h3>
+          <div class="progress-bar">
+            <div class="progress" [style.width.%]="aiStatus.progress"></div>
+          </div>
+          <p class="status-text">{{ getStageDescription(aiStatus.stage) }}</p>
+          @if (aiStatus.currentJob) {
+            <p class="current-job">Processing: {{ aiStatus.currentJob }}</p>
+          }
+        </div>
+      </section>
+    }
+
+    <!-- Jobs List Section -->
+    <section class="jobs-section" *ngIf="teamJobs.length > 0">
+      <h2>Your Team's Jobs</h2>
+      <div class="jobs-grid">
+        @for (job of teamJobs; track job.title) {
+          <div class="job-card" [class.ai-enhanced]="job.aiEnhanced">
+            <div class="job-header">
+              <h3>{{ job.title }}</h3>
+              <span class="status-badge">
+                @if (job.aiEnhanced) {
+                  AI Enhanced
+                } @else {
+                  Active
+                }
+              </span>
+            </div>
+            <p class="job-description">{{ job.description }}</p>
+            
+            <!-- Source Document -->
+            @if (job.sourceDocument) {
+              <div class="source-document">
+                <span class="label">Source:</span>
+                <span class="value">{{ job.sourceDocument }}</span>
+              </div>
+            }
+
+            <!-- References Section -->
+            @if (job.references?.length) {
+              <div class="references">
+                <h4>References</h4>
+                <ul>
+                  @for (ref of job.references; track ref) {
+                    <li>{{ ref }}</li>
+                  }
+                </ul>
+              </div>
+            }
+
+            <!-- Web References -->
+            @if (job.webReferences?.length) {
+              <div class="web-references">
+                <h4>Web Resources</h4>
+                <ul>
+                  @for (ref of job.webReferences; track ref.url) {
+                    <li>
+                      <a href="{{ ref.url }}" target="_blank" rel="noopener">
+                        {{ ref.title }}
+                      </a>
+                      <span class="relevance">{{ ref.relevance }}% relevant</span>
+                    </li>
+                  }
+                </ul>
+              </div>
+            }
+
+            <div class="job-footer">
+              <div class="assigned-to">
+                <span class="label">Assigned to:</span>
+                <span class="value">{{ job.assignedTo }}</span>
+              </div>
+              <div class="deadline">
+                <span class="label">Due:</span>
+                <span class="value">{{ job.deadline | date:'mediumDate' }}</span>
+              </div>
+            </div>
+    </div>
+        }
+      </div>
+    </section>
+  </div>
+</main>
+
+<router-outlet />
