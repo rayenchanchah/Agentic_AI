@@ -47,7 +47,3 @@ An AI-powered system for analyzing the impact of generative AI on workforce sust
 ## API Documentation
 
 The API documentation will be available at `http://localhost:8000/docs` when running the backend server.
-
-## Contributing
-
-Please read CONTRIBUTING.md for details on our code of conduct and the process for submitting pull requests.
