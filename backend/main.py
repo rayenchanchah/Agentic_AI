@@ -26,7 +26,7 @@ app = FastAPI(
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:4200"],  # Angular frontend
+    allow_origins=["http://localhost:4200"],  
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -70,7 +70,6 @@ class JobEnhancementResponse(BaseModel):
 
 @app.post("/api/enhance-job", response_model=JobEnhancementResponse)
 async def enhance_job(request: JobEnhancementRequest):
-    """Enhance job information using RAG and web search"""
     try:
         # Get enhanced information using RAG
         result = await rag_service.retrieve_relevant_info(
@@ -89,7 +88,6 @@ async def enhance_job(request: JobEnhancementRequest):
 
 @app.post("/api/upload")
 async def upload_file(file: UploadFile = File(...)):
-    """Handle file upload and process jobs"""
     try:
         # Validate file type
         allowed_types = ['.csv', '.db', '.sqlite', '.sqlite3', '.pdf', '.html']
@@ -140,13 +138,10 @@ async def upload_file(file: UploadFile = File(...)):
         raise HTTPException(status_code=500, detail=str(e))
 
 async def process_database_file(file_path: str) -> List[dict]:
-    """Process database or CSV file to extract jobs"""
     # Implementation depends on your database/CSV structure
-    # This is a placeholder
     return []
 
 async def process_document_file(file_path: str) -> List[dict]:
-    """Process PDF or HTML file to extract jobs"""
     # Implementation depends on your document structure
     # This is a placeholder
     return []
