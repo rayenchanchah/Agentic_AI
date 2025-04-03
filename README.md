@@ -17,16 +17,6 @@ An AI-powered system for analyzing the impact of generative AI on workforce sust
 - **AI/ML**: LangChain, OpenAI GPT
 - **Database**: PostgreSQL
 
-## Project Structure
-
-```
-.
-├── frontend/           # Angular frontend application
-├── backend/           # FastAPI backend service
-├── ai_agent/          # LangChain-based AI analysis engine
-└── docs/             # Project documentation
-```
-
 ## Setup Instructions
 
 1. Clone the repository
@@ -61,7 +51,3 @@ The API documentation will be available at `http://localhost:8000/docs` when run
 ## Contributing
 
 Please read CONTRIBUTING.md for details on our code of conduct and the process for submitting pull requests.
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details. 
