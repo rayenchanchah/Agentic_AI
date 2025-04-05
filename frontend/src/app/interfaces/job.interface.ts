@@ -4,6 +4,17 @@ export interface WebReference {
   relevance: number;
 }
 
+export interface KnowledgeArticle {
+  id?: string;
+  title: string;
+  content: string;
+  source?: string;
+  author?: string;
+  dateAdded: Date;
+  tags?: string[];
+  usageCount?: number;
+}
+
 export interface TeamJob {
   title: string;
   description: string;
@@ -24,19 +35,20 @@ export interface AIProcessingStatus {
   isProcessing: boolean;
   currentJob?: string;
   progress: number;
-  stage: 'document_analysis' | 'web_search' | 'knowledge_enhancement' | 'complete';
+  stage: 'document_analysis' | 'web_search' | 'content_extraction' | 'knowledge_enhancement' | 'ai_enhancement' | 'finalizing' | 'complete';
   error?: string;
   startTime?: Date;
   estimatedCompletion?: Date;
 }
 
 export interface DocumentSource {
-  type: 'pdf' | 'html' | 'csv' | 'database';
+  type: 'pdf' | 'html' | 'csv' | 'database' | 'article';
   name: string;
   path: string;
   processingStatus: 'pending' | 'processing' | 'completed' | 'error';
   extractedJobCount?: number;
   lastProcessed?: Date;
+  isKnowledgeSource?: boolean;
 }
 
 export interface AIEnhancementResult {

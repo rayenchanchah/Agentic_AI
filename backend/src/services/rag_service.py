@@ -14,19 +14,28 @@ class RAGResult:
     web_references: List[Dict[str, str]]
     confidence_score: float
     knowledge_sources: List[str]
+    article_references: List[Dict[str, str]] = None
+    
+    def __post_init__(self):
+        if self.article_references is None:
+            self.article_references = []
 
 class RAGService:
-    def __init__(self):
+    def __init__(self, articles=None):
         # Initialize the sentence transformer model
         self.model = SentenceTransformer('all-MiniLM-L6-v2')
         
         # Initialize FAISS index
         self.index = None
-        self.documents = []
+        self.documents = articles or []
         self.web_search = WebSearchService()
         
-        # Load knowledge base
-        self._load_knowledge_base()
+        # Load knowledge base if no articles provided
+        if not self.documents:
+            self._load_knowledge_base()
+        else:
+            # Create embeddings and index for provided articles
+            self._index_documents()
 
     def _load_knowledge_base(self):
         """Load and index the knowledge base"""
@@ -47,6 +56,23 @@ class RAGService:
 
         # Create embeddings for all documents
         texts = [doc.get('content', '') for doc in self.documents]
+        embeddings = self.model.encode(texts)
+        
+        # Initialize FAISS index
+        dimension = embeddings.shape[1]
+        self.index = faiss.IndexFlatL2(dimension)
+        self.index.add(embeddings.astype('float32'))
+
+    def _index_documents(self):
+        """Create embeddings and index for documents"""
+        if not self.documents:
+            return
+            
+        # Create embeddings for all documents
+        texts = [doc.get('content', '') for doc in self.documents]
+        if not texts:
+            return
+            
         embeddings = self.model.encode(texts)
         
         # Initialize FAISS index
