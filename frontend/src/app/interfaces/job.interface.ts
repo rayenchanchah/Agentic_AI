@@ -8,6 +8,7 @@ export interface KnowledgeArticle {
   id?: string;
   title: string;
   content: string;
+  // source, author, and tags fields removed from UI but kept in interface for compatibility
   source?: string;
   author?: string;
   dateAdded: Date;
@@ -62,4 +63,4 @@ export interface AIEnhancementResult {
   }[];
   webSearchResults: WebReference[];
   processingTime: number;
-} 
+}

@@ -4,19 +4,19 @@
       <h1>AI-Powered Team Jobs Manager</h1>
       <p class="subtitle">Upload your documents and let AI enhance your team's tasks with web knowledge</p>
     </header>
-    
+
     <!-- File Upload Section -->
     <section class="upload-container">
       <div class="upload-area" [class.processing]="isProcessingFile" [class.drag-over]="isDragOver" [class.has-error]="uploadError">
-        <input 
-          type="file" 
-          id="fileUpload" 
-          (change)="onFileSelected($event)" 
-          accept=".csv,.db,.sqlite,.sqlite3,.pdf,.html,.txt"
+        <input
+          type="file"
+          id="fileUpload"
+          (change)="onFileSelected($event)"
+          accept=".csv,.db,.sqlite,.sqlite3"
           [disabled]="isProcessingFile"
           class="file-input"
           #fileInput>
-        
+
         <div class="upload-content">
           <div class="upload-icon">
             @if (isProcessingFile) {
@@ -35,7 +35,7 @@
               </svg>
             }
           </div>
-          
+
           <div class="upload-text">
             @if (isProcessingFile) {
               <h3>Processing your file...</h3>
@@ -68,29 +68,14 @@
             <label for="articleTitle">Article Title</label>
             <input type="text" id="articleTitle" [(ngModel)]="newArticle.title" placeholder="Enter article title">
           </div>
-          
+
           <div class="form-group">
             <label for="articleContent">Article Content</label>
             <textarea id="articleContent" [(ngModel)]="newArticle.content" rows="6" placeholder="Paste or type article content"></textarea>
           </div>
-          
-          <div class="form-row">
-            <div class="form-group">
-              <label for="articleSource">Source (optional)</label>
-              <input type="text" id="articleSource" [(ngModel)]="newArticle.source" placeholder="Article source">
-            </div>
-            
-            <div class="form-group">
-              <label for="articleAuthor">Author (optional)</label>
-              <input type="text" id="articleAuthor" [(ngModel)]="newArticle.author" placeholder="Article author">
-            </div>
-          </div>
-          
-          <div class="form-group">
-            <label for="articleTags">Tags (comma separated)</label>
-            <input type="text" id="articleTags" [(ngModel)]="articleTagsInput" placeholder="AI, machine learning, etc.">
-          </div>
-          
+
+          <!-- Source, author, and tags fields removed -->
+
           <div class="form-actions">
             <button class="submit-article" (click)="submitArticle()" [disabled]="isSubmittingArticle">
               {{ isSubmittingArticle ? 'Submitting...' : 'Submit Article' }}
@@ -111,19 +96,8 @@
                   <span class="article-date">{{ article.dateAdded | date:'shortDate' }}</span>
                 </div>
                 <p class="article-content">{{ article.content | slice:0:150 }}{{ article.content.length > 150 ? '...' : '' }}</p>
-                
-                @if (article.tags?.length) {
-                  <div class="article-tags">
-                    @for (tag of article.tags; track tag) {
-                      <span class="tag">{{ tag }}</span>
-                    }
-                  </div>
-                }
-                
+
                 <div class="article-footer">
-                  @if (article.source) {
-                    <span class="article-source">Source: {{ article.source }}</span>
-                  }
                   <button class="delete-btn" (click)="deleteArticle(article.id)">Remove</button>
                 </div>
               </div>
@@ -167,7 +141,7 @@
                 </span>
               </div>
               <p class="job-description">{{ job.description }}</p>
-              
+
               <!-- Source Document -->
               @if (job.sourceDocument) {
                 <div class="source-document">

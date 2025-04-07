@@ -57,46 +57,46 @@
   transition: all 0.3s ease;
   background-color: #f9f9f9;
   position: relative;
-  
+
   &.drag-over {
     border-color: #4263eb;
     background-color: #f0f4ff;
   }
-  
+
   &.processing {
     border-color: #6c757d;
     background-color: #f2f2f2;
     pointer-events: none;
   }
-  
+
   &.has-error {
     border-color: #e74c3c;
     background-color: #fff5f5;
-    
+
     .upload-icon svg {
       color: #e74c3c;
     }
-    
+
     h3 {
       color: #e74c3c;
     }
   }
-  
+
   .upload-content {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
   }
-  
+
   .upload-icon {
     margin-bottom: 1.5rem;
-    
+
     svg {
       color: #555;
     }
   }
-  
+
   .file-input {
     position: absolute;
     width: 0.1px;
@@ -105,29 +105,29 @@
     overflow: hidden;
     z-index: -1;
   }
-  
+
   .upload-text {
     h3 {
       margin-bottom: 0.5rem;
       font-size: 1.5rem;
       color: #333;
     }
-    
+
     p {
       margin-bottom: 0.75rem;
       color: #666;
     }
-    
+
     .browse-text {
       color: #4263eb;
       cursor: pointer;
       font-weight: 500;
-      
+
       &:hover {
         text-decoration: underline;
       }
     }
-    
+
     .file-types {
       display: block;
       color: #999;
@@ -135,7 +135,7 @@
       margin-top: 0.5rem;
     }
   }
-  
+
   .retry-button {
     background-color: #e74c3c;
     color: white;
@@ -146,7 +146,7 @@
     cursor: pointer;
     margin-top: 1rem;
     transition: background-color 0.2s;
-    
+
     &:hover {
       background-color: #c0392b;
     }
@@ -421,18 +421,18 @@
   align-items: center;
   margin-bottom: 1.5rem;
   text-align: center;
-  
+
   h2 {
     margin-bottom: 0.5rem;
     color: #333;
     font-size: 1.8rem;
   }
-  
+
   p {
     color: #666;
     margin-bottom: 1rem;
   }
-  
+
   .add-article-btn {
     background-color: #4263eb;
     color: white;
@@ -442,7 +442,7 @@
     font-size: 0.9rem;
     cursor: pointer;
     transition: background-color 0.2s;
-    
+
     &:hover {
       background-color: #3b56d9;
     }
@@ -456,51 +456,51 @@
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   margin-bottom: 2rem;
-  
+
   .form-group {
     margin-bottom: 1rem;
-    
+
     label {
       display: block;
       margin-bottom: 0.5rem;
       font-weight: 500;
       color: #444;
     }
-    
+
     input, textarea {
       width: 100%;
       padding: 0.8rem;
       border: 1px solid #ddd;
       border-radius: 6px;
       font-size: 0.95rem;
-      
+
       &:focus {
         outline: none;
         border-color: #4263eb;
         box-shadow: 0 0 0 2px rgba(66, 99, 235, 0.2);
       }
     }
-    
+
     textarea {
       resize: vertical;
       min-height: 120px;
     }
   }
-  
+
   .form-row {
     display: flex;
     gap: 1rem;
-    
+
     .form-group {
       flex: 1;
     }
   }
-  
+
   .form-actions {
     display: flex;
     justify-content: flex-end;
     margin-top: 1.5rem;
-    
+
     .submit-article {
       background-color: #2e8540;
       color: white;
@@ -510,11 +510,11 @@
       font-weight: 500;
       cursor: pointer;
       transition: background-color 0.2s;
-      
+
       &:hover:not(:disabled) {
         background-color: #247033;
       }
-      
+
       &:disabled {
         background-color: #8bc498;
         cursor: not-allowed;
@@ -544,18 +544,18 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
   padding: 1.2rem;
   transition: transform 0.2s, box-shadow 0.2s;
-  
+
   &:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
   }
-  
+
   .article-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     margin-bottom: 0.8rem;
-    
+
     h4 {
       font-size: 1.1rem;
       margin: 0;
@@ -563,14 +563,14 @@
       font-weight: 600;
       line-height: 1.4;
     }
-    
+
     .article-date {
       font-size: 0.8rem;
       color: #777;
       white-space: nowrap;
     }
   }
-  
+
   .article-content {
     color: #555;
     font-size: 0.95rem;
@@ -579,32 +579,16 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  
-  .article-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-    
-    .tag {
-      background-color: #eef2ff;
-      color: #4263eb;
-      font-size: 0.75rem;
-      padding: 0.3rem 0.6rem;
-      border-radius: 20px;
-    }
-  }
-  
+
+  /* Article tags styles removed */
+
   .article-footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    
-    .article-source {
-      font-size: 0.8rem;
-      color: #777;
-    }
-    
+
+    /* Article source styles removed */
+
     .delete-btn {
       background-color: transparent;
       color: #e63946;
@@ -614,7 +598,7 @@
       font-size: 0.8rem;
       cursor: pointer;
       transition: all 0.2s;
-      
+
       &:hover {
         background-color: #e63946;
         color: white;

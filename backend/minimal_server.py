@@ -59,4 +59,4 @@ def get_articles():
 
 if __name__ == "__main__":
     print("Starting minimal server on http://localhost:3000")
-    uvicorn.run(app, host="0.0.0.0", port=3000) 
+    uvicorn.run(app, host="0.0.0.0", port=3000)

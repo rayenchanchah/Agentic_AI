@@ -1,44 +1,39 @@
 import { Component, HostListener } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-import { TeamJob, AIProcessingStatus, DocumentSource, AIEnhancementResult, KnowledgeArticle } from './interfaces/job.interface';
+import { TeamJob, AIProcessingStatus, KnowledgeArticle } from './interfaces/job.interface';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, HttpClientModule, FormsModule],
+  imports: [RouterOutlet, CommonModule, FormsModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  title(title: any) {
-    throw new Error('Method not implemented.');
-  }
   isProcessingFile = false;
   isDragOver = false;
   teamJobs: TeamJob[] = [];
-  
+
   // Upload error properties
   uploadError = false;
   uploadErrorMessage = '';
-  
+
   // Article management properties
   knowledgeArticles: KnowledgeArticle[] = [];
   showArticleForm = false;
   isSubmittingArticle = false;
   newArticle: KnowledgeArticle = this.getEmptyArticle();
-  articleTagsInput = '';
-  
+
   aiStatus: AIProcessingStatus = {
     isProcessing: false,
     progress: 0,
     stage: 'document_analysis',
     startTime: new Date()
   };
-  currentDocument?: DocumentSource;
-  private apiUrl = 'http://localhost:3000/api';
+  private apiUrl = '/api';
 
   constructor(private http: HttpClient) {
     this.loadKnowledgeArticles();
@@ -55,7 +50,6 @@ export class AppComponent {
     this.showArticleForm = !this.showArticleForm;
     if (this.showArticleForm) {
       this.newArticle = this.getEmptyArticle();
-      this.articleTagsInput = '';
     }
   }
 
@@ -65,15 +59,13 @@ export class AppComponent {
       return;
     }
 
-    // Process tags
-    if (this.articleTagsInput) {
-      this.newArticle.tags = this.articleTagsInput
-        .split(',')
-        .map(tag => tag.trim())
-        .filter(tag => tag.length > 0);
-    }
-
+    // Set date added
     this.newArticle.dateAdded = new Date();
+
+    // Fields removed from UI are set to empty values
+    this.newArticle.source = '';
+    this.newArticle.author = '';
+    this.newArticle.tags = [];
     this.isSubmittingArticle = true;
 
     this.http.post<KnowledgeArticle>(`${this.apiUrl}/knowledge-articles`, this.newArticle)
@@ -82,7 +74,7 @@ export class AppComponent {
           this.knowledgeArticles.push(article);
           this.isSubmittingArticle = false;
           this.toggleArticleForm();
-          
+
           // Update AI status to show knowledge integration
           this.aiStatus = {
             isProcessing: true,
@@ -90,7 +82,7 @@ export class AppComponent {
             stage: 'knowledge_enhancement',
             startTime: new Date()
           };
-          
+
           // Simulate AI processing the new knowledge
           setTimeout(() => {
             this.aiStatus.progress = 100;
@@ -108,7 +100,7 @@ export class AppComponent {
 
   deleteArticle(id?: string) {
     if (!id) return;
-    
+
     if (confirm('Are you sure you want to remove this article from the knowledge base?')) {
       this.http.delete(`${this.apiUrl}/knowledge-articles/${id}`)
         .subscribe({
@@ -139,10 +131,10 @@ export class AppComponent {
     return {
       title: '',
       content: '',
-      source: '',
-      author: '',
+      source: '', // Keeping these fields in the model but not in the UI
+      author: '', // Keeping these fields in the model but not in the UI
       dateAdded: new Date(),
-      tags: [],
+      tags: [], // Keeping these fields in the model but not in the UI
       usageCount: 0
     };
   }
@@ -183,30 +175,30 @@ export class AppComponent {
   private handleFile(file: File) {
     // Clear any previous errors
     this.clearError();
-    
+
     const fileExt = file.name.split('.').pop()?.toLowerCase();
     const allowedTypes = ['csv', 'db', 'sqlite', 'sqlite3', 'pdf', 'html', 'txt'];
-    
+
     if (!allowedTypes.includes(fileExt || '')) {
       this.uploadError = true;
       this.uploadErrorMessage = 'File type not supported. Please upload a CSV, SQLite DB, PDF, HTML, or TXT file.';
       return;
     }
-    
+
     this.isProcessingFile = true;
-    
+
     const formData = new FormData();
     formData.append('file', file);
-    
+
     // Log that we're sending the request
     console.log('Sending file upload request to:', `${this.apiUrl}/upload`);
-    
+
     this.http.post<any>(`${this.apiUrl}/upload`, formData)
       .subscribe({
         next: (response) => {
           console.log('File upload response:', response);
           this.isProcessingFile = false;
-          
+
           // Handle job data from response
           if (response.jobs && response.jobs.length > 0) {
             // Convert string dates to Date objects
@@ -219,14 +211,14 @@ export class AppComponent {
                 }
               }
             });
-            
+
             // Set team jobs to display them
             this.teamJobs = response.jobs;
             console.log(`Successfully loaded ${this.teamJobs.length} jobs`);
           } else {
             console.warn('No jobs were found in the uploaded file');
           }
-          
+
           // Show AI processing animation regardless of response
           this.startAIProcessingAnimation();
         },
@@ -234,7 +226,7 @@ export class AppComponent {
           console.error('Error uploading file:', error);
           this.isProcessingFile = false;
           this.uploadError = true;
-          
+
           if (error.status === 400) {
             this.uploadErrorMessage = `Invalid file: ${error.error?.detail || 'File type not supported'}`;
           } else if (error.status === 413) {
@@ -244,7 +236,7 @@ export class AppComponent {
           } else {
             this.uploadErrorMessage = 'Error uploading file. Please try again.';
           }
-          
+
           // For debugging - force showing jobs even on error
           this.teamJobs = [
             {
@@ -263,7 +255,7 @@ export class AppComponent {
         }
       });
   }
-  
+
   private startAIProcessingAnimation() {
     // Set initial AI processing status
     this.aiStatus = {
@@ -272,18 +264,18 @@ export class AppComponent {
       stage: 'document_analysis',
       startTime: new Date()
     };
-    
+
     // Simulate progress over time
     const totalSteps = 5;
-    const stageNames: ('document_analysis' | 'content_extraction' | 'ai_enhancement' | 'web_search' | 'finalizing' | 'complete')[] = 
+    const stageNames: ('document_analysis' | 'content_extraction' | 'ai_enhancement' | 'web_search' | 'finalizing' | 'complete')[] =
       ['document_analysis', 'content_extraction', 'ai_enhancement', 'web_search', 'finalizing'];
     const timePerStep = 1500; // milliseconds
-    
+
     for (let step = 0; step < totalSteps; step++) {
       setTimeout(() => {
         this.aiStatus.progress = (step + 1) * (100 / totalSteps);
         this.aiStatus.stage = stageNames[step];
-        
+
         // Complete processing after last step
         if (step === totalSteps - 1) {
           setTimeout(() => {
@@ -296,50 +288,7 @@ export class AppComponent {
     }
   }
 
-  private processJobsWithAI(jobs: TeamJob[]) {
-    this.aiStatus = {
-      isProcessing: true,
-      progress: 0,
-      stage: 'document_analysis',
-      startTime: new Date(),
-      estimatedCompletion: new Date(Date.now() + (jobs.length * 30000)) 
-    };
-
-    // Process each job sequentially
-    jobs.forEach((job, index) => {
-      this.http.post<AIEnhancementResult>(`${this.apiUrl}/enhance-job`, job)
-        .subscribe({
-          next: (result) => {
-            // Update the job with AI-enhanced information
-            this.teamJobs[index] = result.enhancedJob;
-            this.aiStatus.progress = ((index + 1) / jobs.length) * 100;
-            this.aiStatus.currentJob = result.enhancedJob.title;
-            
-            if (index === jobs.length - 1) {
-              this.aiStatus.isProcessing = false;
-              this.aiStatus.stage = 'complete';
-            }
-          },
-          error: (error) => {
-            console.error(`Error processing job ${job.title}:`, error);
-            this.aiStatus.error = `Failed to process job: ${job.title}`;
-          }
-        });
-    });
-  }
-
-  private getDocumentType(extension: string): DocumentSource['type'] {
-    switch (extension) {
-      case 'pdf':
-        return 'pdf';
-      case 'html':
-        return 'html';
-      case 'csv':
-        return 'csv';
-      default:
-        return 'database';
-    }
-  }
+  // Removed unused methods
 
   getStageDescription(stage: string): string {
     const stages: {[key: string]: string} = {
